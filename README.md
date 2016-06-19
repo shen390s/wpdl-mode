@@ -14,9 +14,11 @@ Example of EMACS major mode
 
   - install wisi from github or melpa
   - using wisi-generate to compile wpdl.wy to generate wpdl-wy.el
+
     ``
     wisi-generate.exe -v 2 wpdl.wy Elisp
-    ``
+    `` 
+
   - setup load path and load wpdl-mode.el
   - load wpdl.txt and enable wpdl-mode 
   
