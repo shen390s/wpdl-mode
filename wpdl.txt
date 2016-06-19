@@ -1,0 +1,31 @@
+# This is just a test 
+workflow	'In_the_Mail_Room'
+    created	1998-7-15
+    name	"In the Mail Room"
+
+    # add some lines to separate activities
+    activity	'MailRoom'
+        # give description in comment for detail
+        # of activity
+        name	"Mail Room"
+        tool_list
+            'scan_document'
+            'identify_document'
+            'send_document'
+        end_tool_list
+        performer 'Joe'
+    end_activity
+
+    # add separate lines
+    #=========================================
+    activity 'test'
+        # add more description here
+        name "test"
+        tool_list
+            'run test script'
+            'check test result'
+        end_tool_list
+    end_activity
+
+    # you can add more activities
+end_workflow

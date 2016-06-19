@@ -1,0 +1,136 @@
+;;
+;; compile this file using:
+;; wisi-generate.exe -v 2 wpdl.wy Elisp 
+;;
+%{
+  ;; add prologue here
+  ;; enable verbose information in grammar compiling
+  (setq wisent-verbose-flag t)
+%}
+
+;; token here
+%token <number> NUMERIC_LITERAL wisi-number-p
+
+;; strings(double quoted/single quoted)
+%token <string-double> DQ_STRING
+%token <string-single> SQ_STRING
+
+;; punctuations
+%token <punctuation> HYPHEN "-"
+
+;; keywords
+%keyword END_WORKFLOW "end_workflow"
+%keyword END_ACTIVITY "end_activity"
+%keyword END_TOOL_LIST "end_tool_list"
+%keyword WORKFLOW "workflow"
+%keyword CREATED "created"
+%keyword NAME "name"
+%keyword ACTIVITY "activity"
+%keyword TOOL_LIST "tool_list"
+%keyword PERFORMER "performer"
+
+%start workflow
+
+%%
+
+workflow:
+    WORKFLOW  SQ_STRING
+    workflow-statements
+    END_WORKFLOW
+    (progn
+      (wisi-statement-action [1 block-start 4 block-end])
+      (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face
+                         4 font-lock-keyword-face])
+      (wisi-containing-action 1 3)
+      ;;(wisi-motion-action [1 2 [4 block-middle OR] 5])
+      )
+  ;
+
+workflow-statements:
+    workflow-statement
+  | workflow-statements workflow-statement
+  ;
+
+workflow-statement:
+    createinfo
+  | name
+  | activity
+  ;
+
+createinfo:
+    CREATED date 
+    (progn
+      (wisi-statement-action [1 statement-start 2 statement-end])
+      (wisi-face-action [1 font-lock-keyword-face 2  font-lock-constant-face])
+      )
+  ;
+
+date:
+    NUMERIC_LITERAL HYPHEN NUMERIC_LITERAL HYPHEN NUMERIC_LITERAL 
+  ;
+
+name:
+    NAME DQ_STRING 
+    (progn
+      (wisi-statement-action [1 statement-start 2 statement-end])
+      (wisi-face-action [1 font-lock-keyword-face
+                         2 font-lock-function-name-face])
+     )
+  ;
+
+activity:
+    ACTIVITY SQ_STRING 
+    activity_statements
+    END_ACTIVITY 
+    (progn
+      (wisi-statement-action [1 block-start 4 block-end])
+      (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face
+                         4 font-lock-keyword-face])
+      (wisi-containing-action 1 3)
+      ;; (wisi-motion-action [1 2 [4 block-middle OR] 5])
+     )
+  ;
+
+activity_statements:
+    activity_statement
+  | activity_statements activity_statement
+  ;
+
+activity_statement:
+    name
+  | tool_list
+  | performer
+  ;
+
+tool_list:
+    TOOL_LIST 
+    sq_str_list
+    END_TOOL_LIST 
+    (progn
+      (wisi-statement-action [1 block-start 3 block-end])
+      (wisi-face-action [1 font-lock-keyword-face 3 font-lock-keyword-face])
+      (wisi-containing-action 1 2)
+      ;; (wisi-motion-action [1 [3 block-middle OR] 4])
+      )
+  ;
+
+sq_str_list:
+    SQ_STRING 
+    (progn
+      (wisi-face-action [1 font-lock-string-face])
+      )
+  | sq_str_list SQ_STRING 
+    (progn
+      (wisi-face-action [2 font-lock-string-face])
+      )
+  ;
+
+performer:
+    PERFORMER SQ_STRING 
+    (progn
+      (wisi-statement-action [1 statement-start 2 statement-end])
+      (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face])
+     )
+  ;
+
+%%
