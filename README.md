@@ -3,7 +3,7 @@ Example of EMACS major mode
 
 # WPDL mode
 
-  tutor of emacs mode WPDL is described in https://www.emacswiki.org/emacs/ModeTutorial. 
+  tutorial of emacs mode WPDL is described in https://www.emacswiki.org/emacs/ModeTutorial. 
   
 # The detail of example
 
