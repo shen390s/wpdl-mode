@@ -1,0 +1,24 @@
+workflow	'In_the_Mail_Room'
+    created	1998-7-15
+    name	"In the Mail Room"
+
+    activity	'MailRoom'
+        name	"Mail Room"
+        tool_list
+            'scan_document'
+            'identify_document'
+            'send_document'
+        end_tool_list
+        performer 'Joe'
+    end_activity
+
+    activity 'test'
+        name "test"
+
+        tool_list
+            'run test script'
+            'check test result'
+        end_tool_list
+    end_activity
+
+end_workflow
