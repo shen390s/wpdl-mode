@@ -17,7 +17,7 @@
     (modify-syntax-entry ?\' "\"" table)
     (modify-syntax-entry ?- "." table)
     (modify-syntax-entry ?\n "." table)
-    (modify-syntax-entry ?# "<" table)
+    ;;(modify-syntax-entry ?# "<" table)
     table)
   "syntax table of WPDL mode")
 
@@ -40,7 +40,18 @@
 
 (defun wpdl-wisi-comment ()
   "calculate comment indentation current dummy because we have no comment"
-  )
+  (when (and (not (= (point) (point-max)))
+             (= 11 (syntax-class (syntax-after (point)))))
+    (cond
+     ((= 0 (current-column))
+      0)
+     ((or (save-excursion (forward-line -1) (looking-at "\\s *$"))
+          (save-excursion (forward-comment -1) (not (looking-at comment-start))))
+      (let ((indent (wpdl-wisi-after-cache))
+            prev-indent next-indent)
+        indent))
+     (t (forward-comment -1)
+        (current-column)))))
 
 (defun wpdl-indent-containing (offset cache &optional before)
   (save-excursion
@@ -115,6 +126,7 @@
               wpdl-wy--keyword-table
               wpdl-wy--token-table
               wpdl-wy--parse-table)
+  (set (make-local-variable 'comment-start) "#")
   (set (make-local-variable 'comment-indent-function)
        'wisi-comment-indent))
 
