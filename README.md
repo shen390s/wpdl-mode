@@ -9,6 +9,7 @@ Example of EMACS major mode
 
   - using wisi indent engine from opentoken http://www.stephe-leake.org/ada/opentoken.html
   - support both font lock and indentation
+  - using ``#'' as comment start
   
 # Usage
 

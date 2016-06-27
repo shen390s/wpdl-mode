@@ -3,7 +3,7 @@
 
 ;;
 ;; (add-to-list 'load-path "~/tmp/wisi")
-;; (add-to-list 'load-path "~/works/projprog/wpdl")
+;; (add-to-list 'load-path "~/tmp/wpdl-mode")
 (defvar wpdl-mode-hook nil
   "hooks when wpdl mode has been enabled"
   )
@@ -16,8 +16,8 @@
     (modify-syntax-entry ?\s " " table)
     (modify-syntax-entry ?\' "\"" table)
     (modify-syntax-entry ?- "." table)
-    (modify-syntax-entry ?\n "." table)
-    ;;(modify-syntax-entry ?# "<" table)
+    (modify-syntax-entry ?\n ">" table)
+    (modify-syntax-entry ?# "<" table)
     table)
   "syntax table of WPDL mode")
 
@@ -127,10 +127,16 @@
               wpdl-wy--token-table
               wpdl-wy--parse-table)
   (set (make-local-variable 'comment-start) "#")
+  (set (make-local-variable 'comment-end) "\n")
   (set (make-local-variable 'comment-indent-function)
        'wisi-comment-indent))
 
 (add-hook 'wpdl-mode-hook 'wpdl-wisi-setup)
+
+(defconst wpdl-font-lock-comment
+  '(("#\\(.*$\\)" . font-lock-comment-face))
+  "comments face definition"
+  )
 
 (defun wpdl-mode ()
   (interactive)
@@ -138,5 +144,7 @@
   (setq major-mode 'wpdl-mode)
   (setq mode-name "WPDL")
   (set-syntax-table wpdl-mode-syntax-table)
+  (set (make-local-variable 'font-lock-defaults)
+       '(wpdl-font-lock-comment))
   (run-mode-hooks 'wpdl-mode-hook)
   (setq wisi-debug 99))

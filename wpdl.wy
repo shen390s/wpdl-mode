@@ -9,7 +9,6 @@
 %}
 
 ;; token here
-%token <line_comment> COMMENT "#"
 %token <number> NUMERIC_LITERAL wisi-number-p
 
 ;; strings(double quoted/single quoted)
@@ -18,7 +17,6 @@
 
 ;; punctuations
 %token <punctuation> HYPHEN "-"
-%token <punctuation> NEWLINE "\n"
 
 ;; keywords
 %keyword END_WORKFLOW "end_workflow"
@@ -36,14 +34,14 @@
 %%
 
 workflow:
-    WORKFLOW  SQ_STRING NEWLINE 
+    WORKFLOW  SQ_STRING
     workflow-statements
-    END_WORKFLOW NEWLINE 
+    END_WORKFLOW
     (progn
-      (wisi-statement-action [1 block-start 5 block-end])
+      (wisi-statement-action [1 block-start 4 block-end])
       (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face
-                         5 font-lock-keyword-face])
-      (wisi-containing-action 1 4)
+                         4 font-lock-keyword-face])
+      (wisi-containing-action 1 3)
       ;;(wisi-motion-action [1 2 [4 block-middle OR] 5])
       )
   ;
@@ -57,13 +55,12 @@ workflow-statement:
     createinfo
   | name
   | activity
-  | NEWLINE
   ;
 
 createinfo:
-    CREATED date NEWLINE 
+    CREATED date 
     (progn
-      (wisi-statement-action [1 statement-start 3 statement-end])
+      (wisi-statement-action [1 statement-start 2 statement-end])
       (wisi-face-action [1 font-lock-keyword-face 2  font-lock-constant-face])
       )
   ;
@@ -73,23 +70,23 @@ date:
   ;
 
 name:
-    NAME DQ_STRING NEWLINE 
+    NAME DQ_STRING 
     (progn
-      (wisi-statement-action [1 statement-start 3 statement-end])
+      (wisi-statement-action [1 statement-start 2 statement-end])
       (wisi-face-action [1 font-lock-keyword-face
                          2 font-lock-function-name-face])
      )
   ;
 
 activity:
-    ACTIVITY SQ_STRING NEWLINE 
+    ACTIVITY SQ_STRING 
     activity_statements
-    END_ACTIVITY NEWLINE 
+    END_ACTIVITY 
     (progn
-      (wisi-statement-action [1 block-start 5 block-end])
+      (wisi-statement-action [1 block-start 4 block-end])
       (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face
-                         5 font-lock-keyword-face])
-      (wisi-containing-action 1 4)
+                         4 font-lock-keyword-face])
+      (wisi-containing-action 1 3)
       ;; (wisi-motion-action [1 2 [4 block-middle OR] 5])
      )
   ;
@@ -103,37 +100,35 @@ activity_statement:
     name
   | tool_list
   | performer
-  | NEWLINE
   ;
 
 tool_list:
-    TOOL_LIST NEWLINE 
+    TOOL_LIST 
     sq_str_list
-    END_TOOL_LIST NEWLINE 
+    END_TOOL_LIST 
     (progn
-      (wisi-statement-action [1 block-start 4 block-end])
-      (wisi-face-action [1 font-lock-keyword-face 4 font-lock-keyword-face])
-      (wisi-containing-action 1 3)
+      (wisi-statement-action [1 block-start 3 block-end])
+      (wisi-face-action [1 font-lock-keyword-face 3 font-lock-keyword-face])
+      (wisi-containing-action 1 2)
       ;; (wisi-motion-action [1 [3 block-middle OR] 4])
       )
   ;
 
 sq_str_list:
-    SQ_STRING NEWLINE
+    SQ_STRING 
     (progn
       (wisi-face-action [1 font-lock-string-face])
       )
-  | sq_str_list SQ_STRING NEWLINE 
+  | sq_str_list SQ_STRING 
     (progn
       (wisi-face-action [2 font-lock-string-face])
       )
-  | NEWLINE
   ;
 
 performer:
-    PERFORMER SQ_STRING NEWLINE
+    PERFORMER SQ_STRING 
     (progn
-      (wisi-statement-action [1 statement-start 3 statement-end])
+      (wisi-statement-action [1 statement-start 2 statement-end])
       (wisi-face-action [1 font-lock-keyword-face 2 font-lock-string-face])
      )
   ;
