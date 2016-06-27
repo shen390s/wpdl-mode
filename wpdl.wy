@@ -4,8 +4,6 @@
 ;;
 %{
   ;; add prologue here
-  ;; enable verbose information in grammar compiling
-  (setq wisent-verbose-flag t)
 %}
 
 ;; token here
